@@ -1,0 +1,71 @@
+body {
+    background-color: black;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    background-color: black;
+    height: 200px;
+}
+
+p {
+    color: white;
+    font-size: 8vh;
+}
+
+h1 {
+    color: white;
+    font-size: 90px;
+    font-weight: bold;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td {
+    text-align: center;
+    padding: 5px;
+}
+
+button {
+    background-color: blue;
+    color: white;
+    font-size: 62px;
+    font-weight: bold;
+    border: none;
+    width: 24%;
+    height: 25vh;
+    margin: 5px;
+}
+
+#years button.disabled {
+    color: darkgrey;
+    background: lightgrey none repeat scroll 0% 0%;
+}
+
+#submitResults {
+    background-color: green;
+    width: 98%;
+    height: 50vh;
+}
+
+.invisible {
+    display: none;
+}
+
+@media screen and (max-width: 600px) {
+    body {
+        margin: 0;
+    }
+
+    button {
+        font-size: 5vh;
+        margin: 1px;
+    }
+}
