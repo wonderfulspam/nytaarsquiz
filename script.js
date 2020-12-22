@@ -3,7 +3,7 @@ const END_YEAR = 2010;
 
 document.addEventListener("DOMContentLoaded", function () {
     createTable();
-    addButtonHandler();
+    addButtonHandlers();
     setButtonState();
 });
 
@@ -16,7 +16,7 @@ function createTable() {
     }
 }
 
-function addButtonHandler() {
+function addButtonHandlers() {
     const table = document.getElementById("years");
     table.addEventListener("click", function (event) {
         // Click handler is on the whole <div> so make sure we clicked a button which is not disabled
@@ -26,6 +26,12 @@ function addButtonHandler() {
         registerChoice(year);
         checkIfDone();
     });
+
+    const submitButton = document.getElementById("submitResults");
+    submitButton.addEventListener("click", function () {
+        // Insert code here!!
+        alert("OK");
+    })
 }
 
 // Append answer to list of answers and save state
