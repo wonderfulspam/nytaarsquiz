@@ -59,13 +59,18 @@ button {
     display: none;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-device-width: 600px) {
     body {
         margin: 0;
     }
 
+    p {
+        font-size: 3vh;
+    }
+
     button {
-        font-size: 5vh;
-        margin: 1px;
+        font-size: 4vh;
+        margin: 3px;
+        height: 15vh;
     }
 }
