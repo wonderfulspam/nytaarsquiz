@@ -44,6 +44,12 @@ button {
     margin: 5px;
 }
 
+.half-width {
+    width: 48%;
+    height: 50vh;
+    font-size: 62px;
+}
+
 #years button.disabled {
     color: darkgrey;
     background: lightgrey none repeat scroll 0% 0%;

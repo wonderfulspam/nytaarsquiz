@@ -1,5 +1,3 @@
-USE mdbuser6051179;
-
 DROP TABLE IF EXISTS Players;
 CREATE TABLE Players (
    PlayerID		INT(5)		NOT NULL	AUTO_INCREMENT
@@ -82,27 +80,6 @@ DELIMITER //
   END
 //
 DELIMITER ;
-
-/* Inserts og updates til test */
-INSERT INTO Games (Password, StartYear, EndYear, CreatedByPlayerID) VALUES ('pass', 2019, 2020, 1);
-
-UPDATE GameAnswers
-SET Artist = 'Eminem', Title = 'Godzilla', SongNumber = 1
-WHERE Year = 2020;
-
-UPDATE GameAnswers
-SET Artist = 'Weyes Blood', Title = 'Andromeda', SongNumber = 2
-WHERE Year = 2019;
-
-INSERT INTO Players (PlayerName) VALUES ('Chrelle'), ('Emil');
-
-INSERT INTO PlayerAnswers (GameID, PlayerID, SongNumber, Year) VALUES 
-   (1, 1, 1, 1998)
-  ,(1, 1, 2, 2019)
-  ,(1, 2, 1, 2018)
-  ,(1, 2, 2, 2017)
-;
-
 
 /* View til resultater runde for runde med stilling for runden og samlet stilling til og med den givne runde.
 CREATE OR REPLACE VIEW GameResults

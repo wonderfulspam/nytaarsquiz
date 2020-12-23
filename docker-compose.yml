@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  backend:
+    build:
+      context: ./docker/
+    volumes:
+      - ./src:/var/www/html/
+    env_file:
+      - ./sample.env
+    ports:
+      - 8080:80
+  db:
+    image: mysql:5
+    volumes:
+      - ./db_init_scripts:/docker-entrypoint-initdb.d
+    env_file:
+      - ./sample.env
