@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 /* Creates the table to be populated with players. Player names must be unique.
  * PlayerID is used when submitting scores and for generating scoreboards.
  */
@@ -82,10 +84,13 @@ AS SELECT 0 n UNION ALL SELECT 1  UNION ALL SELECT 2  UNION ALL
    SELECT 15;
 
 DROP TABLE IF EXISTS TallyTable;
-CREATE TABLE TallyTable
-AS SELECT ( ( hi.n << 4 ) | lo.n ) AS n
+CREATE TABLE TallyTable (n INT(2)) ENGINE=InnoDB;
+INSERT INTO TallyTable (n)
+SELECT ( ( hi.n << 4 ) | lo.n ) AS n
 FROM generator_16 lo, generator_16 hi
 WHERE ( ( hi.n << 4 ) | lo.n ) BETWEEN 0 AND 99;
+			       
+DROP VIEW IF EXISTS generator_16;
 
 
 /* Created the procedure to create a row for every year in the
@@ -120,6 +125,8 @@ DELIMITER //
   END
 //
 DELIMITER ;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 /* View til resultater runde for runde med stilling for runden og samlet stilling til og med den givne runde.
 CREATE OR REPLACE VIEW GameResults
