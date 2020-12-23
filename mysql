@@ -2,21 +2,21 @@ USE mdbuser6051179;
 
 DROP TABLE IF EXISTS Players;
 CREATE TABLE Players (
-	 PlayerID		INT(5)			NOT NULL	AUTO_INCREMENT
-	,PlayerName		VARCHAR(50)		NOT NULL	UNIQUE
-	,PlayerPassword	VARCHAR(50)		NOT NULL	
-	,PRIMARY KEY(PlayerID)
+   PlayerID		INT(5)		NOT NULL	AUTO_INCREMENT
+  ,PlayerName		VARCHAR(50)	NOT NULL	UNIQUE
+  ,PlayerPassword	VARCHAR(50)	NOT NULL	
+  ,PRIMARY KEY(PlayerID)
 )
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS Games;
 CREATE TABLE IF NOT EXISTS Games (
-	 GameID				INT(5)			NOT NULL	AUTO_INCREMENT
-	,GamePassword 		VARCHAR(20)		NOT NULL
-	,StartYear			INT(4)			NOT NULL
-	,EndYear			INT(4)			NOT NULL
-	,CreatedByPlayerID	INT(5)			NOT NULL
-	,PRIMARY KEY(GameID)
+   GameID		INT(5)		NOT NULL	AUTO_INCREMENT
+  ,GamePassword 	VARCHAR(20)	NOT NULL
+  ,StartYear		INT(4)		NOT NULL
+  ,EndYear		INT(4)		NOT NULL
+  ,CreatedByPlayerID	INT(5)		NOT NULL
+  ,PRIMARY KEY(GameID)
 )
 ENGINE = InnoDB;
 
@@ -24,20 +24,20 @@ ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS GameAnswers;
 CREATE TABLE IF NOT EXISTS GameAnswers (
-	 GameID			INT(5)			NOT NULL
-	,Year			INT(4)			NULL		
-	,SongNumber		INT(2)			NULL		
-	,Artist			VARCHAR(100)	NULL
-	,Title			VARCHAR(100)	NULL
+   GameID	INT(5)		NOT NULL
+  ,Year		INT(4)		NULL		
+  ,SongNumber	INT(2)		NULL		
+  ,Artist	VARCHAR(100)	NULL
+  ,Title	VARCHAR(100)	NULL
 )
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS PlayerAnswers;
 CREATE TABLE IF NOT EXISTS PlayerAnswers (
-	 GameID			INT(5)		NOT NULL
-	,PlayerID		INT(5)		NOT NULL
-	,SongNumber		INT(2)		NOT NULL
-	,Year			INT(4)		NOT NULL	
+   GameID	INT(5)	NOT NULL
+  ,PlayerID	INT(5)	NOT NULL
+  ,SongNumber	INT(2)	NOT NULL
+  ,Year		INT(4)	NOT NULL	
 )
 ENGINE = InnoDB;
 
@@ -56,35 +56,32 @@ WHERE ( ( hi.n << 4 ) | lo.n ) BETWEEN 0 AND 99;
 
 DROP PROCEDURE IF EXISTS PrepareGameAnswers;
 DELIMITER //
-	CREATE PROCEDURE PrepareGameAnswers(
-		IN in_GameID	INT(5)
-	)
-	BEGIN
+  CREATE PROCEDURE PrepareGameAnswers(
+    IN in_GameID	INT(5)
+  )
+  BEGIN
+    DELETE FROM GameAnswers WHERE GameID = in_GameID;
+    
+    SET @StartYear = (SELECT MAX(StartYear) FROM Games WHERE GameID = in_GameID);
+    SET @NumberOfYears = (SELECT MAX(EndYear) - MAX(StartYear) + 1 FROM Games WHERE GameID = in_GameID);
 
-		DELETE FROM GameAnswers WHERE GameID = in_GameID;
+    INSERT INTO GameAnswers (GameID, Year)
+    SELECT 1 AS GameID, n + @StartYear	AS Year
+    FROM TallyTable
+    WHERE n < @NumberOfYears;
 
-		SET @StartYear = (SELECT MAX(StartYear) FROM Games WHERE GameID = in_GameID);
-
-		SET @NumberOfYears = (SELECT MAX(EndYear) - MAX(StartYear) + 1 FROM Games WHERE GameID = in_GameID);
-
-		INSERT INTO GameAnswers (GameID, Year)
-		SELECT 1 AS GameID, n + @StartYear	AS Year
-		FROM TallyTable
-		WHERE n < @NumberOfYears;
-
-	END 
-	//
+  END
+//
 DELIMITER ;
 
 DELIMITER //
-	CREATE TRIGGER after_game_update
-	AFTER INSERT ON Games FOR EACH ROW
-	BEGIN
-		CALL PrepareGameAnswers(NEW.GameID);
-	END
-	//
+  CREATE TRIGGER after_game_update
+  AFTER INSERT ON Games FOR EACH ROW
+  BEGIN
+    CALL PrepareGameAnswers(NEW.GameID);
+  END
+//
 DELIMITER ;
-
 
 /* Inserts og updates til test */
 INSERT INTO Games (Password, StartYear, EndYear, CreatedByPlayerID) VALUES ('pass', 2019, 2020, 1);
@@ -100,14 +97,14 @@ WHERE Year = 2019;
 INSERT INTO Players (PlayerName) VALUES ('Chrelle'), ('Emil');
 
 INSERT INTO PlayerAnswers (GameID, PlayerID, SongNumber, Year) VALUES 
-	 (1, 1, 1, 1998)
-	,(1, 1, 2, 2019)
-	,(1, 2, 1, 2018)
-	,(1, 2, 2, 2017)
+   (1, 1, 1, 1998)
+  ,(1, 1, 2, 2019)
+  ,(1, 2, 1, 2018)
+  ,(1, 2, 2, 2017)
 ;
 
 
-/*
+/* View til resultater runde for runde med stilling for runden og samlet stilling til og med den givne runde.
 CREATE OR REPLACE VIEW GameResults
 AS
 SELECT 
