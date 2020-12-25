@@ -8,8 +8,8 @@ CREATE TABLE Players (
    PlayerID		INT(5)		NOT NULL	AUTO_INCREMENT
   ,PlayerName		VARCHAR(50)	NOT NULL	UNIQUE
   ,PlayerPassword	VARCHAR(50)	NOT NULL	
-  ,Token VARCHAR(50) NOT NULL UNIQUE
-  ,IsAdmin Boolean DEFAULT FALSE
+  ,Token 		VARCHAR(50) 	NOT NULL 	UNIQUE
+  ,IsAdmin 		BOOLEAN		DEFAULT FALSE
   ,PRIMARY KEY(PlayerID)
 ) ENGINE = InnoDB;
 
@@ -118,7 +118,7 @@ DELIMITER //
   END
 //
 DELIMITER ;
-
+			       
 DELIMITER //
   CREATE TRIGGER after_quiz_update
   AFTER INSERT ON Quizzes FOR EACH ROW
@@ -128,15 +128,65 @@ DELIMITER //
 //
 DELIMITER ;
 
-SET FOREIGN_KEY_CHECKS = 1;
 
-/* View til resultater runde for runde med stilling for runden og samlet stilling til og med den givne runde.
-CREATE OR REPLACE VIEW GameResults
-AS
-SELECT 
-	 gm_ans.GameID
-	,gm_ans.SongNumber
-	,
-FROM QuizAnswers gm_ans
-INNER JOIN PlayerAnswers pl_ans;
-*/
+CREATE OR REPLACE VIEW QuizScores AS
+SELECT
+   pl.PlayerName
+  ,pl_ans.GameID
+  ,pl_ans.SongNumber
+  ,pl_ans.Year
+  ,ABS(qz_ans.Year - pl_ans.Year) AS SongScore
+FROM PlayerAnswers pl_ans
+INNER JOIN Players pl
+  ON pl.PlayerID = pl_ans.PlayerID
+INNER JOIN Games gm
+  ON gm.GameID = pl_ans.GameID
+INNER JOIN Quizzes qz
+  ON qz.QuizID = gm.QuizID
+INNER JOIN QuizAnswers qz_ans
+  ON qz_ans.QuizID = qz.QuizID AND qz_ans.SongNumber = pl_ans.SongNumber;
+
+/* Gets the scores of a given round */
+DROP PROCEDURE IF EXISTS RoundScore;
+DELIMITER //
+  CREATE PROCEDURE RoundScore(
+     IN in_GameID	INT(5)
+    ,IN in_SongNumber	INT(2)
+  )
+  BEGIN
+    SELECT PlayerName, Year, SongScore
+    FROM QuizScores
+    WHERE GameID = in_GameID AND SongNumber = in_SongNumber
+    ORDER BY PlayerName ASC;
+  END
+//
+DELIMITER ;
+
+/* Gets the standings up to and including a given round 
+ * Only includes players that have answered all questions up until the given round.
+ */
+DROP PROCEDURE IF EXISTS QuizStandings;
+DELIMITER //
+  CREATE PROCEDURE QuizStandings (
+     IN in_GameID	INT(5)
+    ,IN in_SongNumber	INT(2)
+  )
+  BEGIN
+    SELECT PlayerName, SUM(SongScore) AS TotalScore
+    FROM QuizScores
+    WHERE GameID = in_GameID AND SongNumber <= in_SongNumber
+    GROUP BY PlayerName
+    HAVING COUNT(PlayerName) >= in_SongNumber
+    ORDER BY TotalScore ASC, PlayerName ASC;
+  END
+//
+DELIMITER ;
+
+-- Example: Scores of round 2 of GameID = 1:
+CALL RoundScore(1, 2);
+
+-- Example: Standings of GameID = 1 after round 2:
+CALL QuizStandings(1, 2);
+			       
+
+SET FOREIGN_KEY_CHECKS = 1;
