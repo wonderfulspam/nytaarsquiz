@@ -1,16 +1,50 @@
+var LOGIN_OR_CREATE = "";
+
 document.addEventListener("DOMContentLoaded", function () {
+    if (getCookie("token") !== null) {
+        window.location = "/landing";
+    }
     addButtonHandlers();
 });
 
 function addButtonHandlers() {
-    const createButton = document.getElementById("create");
-    const joinButton = document.getElementById("join");
+    const loginButton = document.getElementById("login");
+    const signupButton = document.getElementById("signup");
 
-    createButton.addEventListener("click", function () {
-        alert("Ikke implementeret endnu");
+    loginButton.addEventListener("click", function () {
+        LOGIN_OR_CREATE = "login";
+        showNameInput();
     });
 
-    joinButton.addEventListener("click", function () {
-        window.location = "/join";
-    })
+    signupButton.addEventListener("click", function () {
+        LOGIN_OR_CREATE = "create";
+        showNameInput();
+    });
+}
+
+function showNameInput() {
+    document.getElementById("login").classList.toggle("invisible");
+    document.getElementById("signup").classList.toggle("invisible");
+    document.getElementById("username").classList.remove("invisible");
+    document.getElementById("password").classList.remove("invisible");
+    document.getElementById("submit").classList.remove("invisible");
+}
+
+function loginOrCreate() {
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+    password = md5(password);
+    console.log(password);
+    postData("/db/login_or_create.php", { username: username, password: password, action: LOGIN_OR_CREATE })
+        .then(data => handleResponse(data));
+}
+
+function handleResponse(data) {
+    if (error = data.error) {
+        alert(error);
+        return;
+    }
+    let token = data.token;
+    setCookie("token", token, 365);
+    window.location = "/landing";
 }

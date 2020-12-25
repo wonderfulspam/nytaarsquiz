@@ -4,13 +4,17 @@
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="/style.css">
+    <script type="text/javascript" src="/js/common.js"></script>
     <script type="text/javascript" src="/js/index.js"></script>
 </head>
 
 <body>
     <div id="main">
-        <button class="half-width" id="join">Deltag i et spil</button>
-        <button class="half-width" id="create">Opret nyt spil</button>
+        <button class="half-width" id="login">Log ind</button>
+        <button class="half-width" id="signup">Opret bruger</button>
+        <input type="text" class="half-width invisible" id="username" placeholder="Navn" />
+        <input type="password" class="half-width invisible" id="password" placeholder="Kodeord" />
+        <button class="half-width invisible" id="submit" onclick="loginOrCreate()">Godkend</button>
     </div>
 </body>
 

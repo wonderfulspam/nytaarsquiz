@@ -1,12 +1,21 @@
 function submitPin() {
     const pin = document.getElementById("pin").value;
     const data = { pin: pin };
-    fetch("/db/join_game.php", {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    }).then(res => res.text())
-        .then(data => console.log(data))
+    postData("/db/find_game.php", data)
+        .then(data => handleGameResponse(data));
+}
+
+function handleGameResponse(data) {
+    if (error = data.error) {
+        alert(error);
+    } else {
+        saveGameInfo(data);
+        window.location = "/game";
+    }
+}
+
+function saveGameInfo(gameInfo) {
+    localStorage.setItem("gameId", gameInfo.gameId);
+    localStorage.setItem("startYear", gameInfo.startYear);
+    localStorage.setItem("endYear", gameInfo.endYear);
 }

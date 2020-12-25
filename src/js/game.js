@@ -1,11 +1,21 @@
-const START_YEAR = 1999;
-const END_YEAR = 2010;
+var PLAYER_ID;
+var GAME_ID;
+var START_YEAR;
+var END_YEAR;
 
 document.addEventListener("DOMContentLoaded", function () {
+    getGameInfo();
     createTable();
     addButtonHandlers();
     setButtonState();
 });
+
+function getGameInfo() {
+    PLAYER_ID = localStorage.getItem("playerId");
+    GAME_ID = localStorage.getItem("gameId");
+    START_YEAR = localStorage.getItem("startYear");
+    END_YEAR = localStorage.getItem("endYear");
+}
 
 function createTable() {
     const table = document.getElementById("years");
@@ -27,15 +37,32 @@ function addButtonHandlers() {
         checkIfDone();
     });
 
-    const submitButton = document.getElementById("submitResults");
+    const submitButton = document.getElementById("showResults");
     submitButton.addEventListener("click", function () {
-        // Insert code here!!
-        alert("OK");
+        window.location = "/results";
     })
 }
 
-// Append answer to list of answers and save state
 function registerChoice(year) {
+    const answerNumber = document.querySelectorAll("button.disabled").length;
+    const data = {
+        playerId: PLAYER_ID,
+        gameId: GAME_ID,
+        songNumber: answerNumber,
+        year: year
+    }
+    postData("/db/store_answer.php", data)
+        .then(data => handleResponse(data));
+}
+
+function handleResponse(data) {
+    if (error = data.error) {
+        alert(error);
+    }
+}
+
+// Append answer to list of answers and save state
+function _registerChoiceLocal(year) {
     let answers = JSON.parse(localStorage.getItem("answers") || "[]");
     answers.push(year);
     localStorage.setItem("answers", JSON.stringify(answers));

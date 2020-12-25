@@ -8,6 +8,8 @@ CREATE TABLE Players (
    PlayerID		INT(5)		NOT NULL	AUTO_INCREMENT
   ,PlayerName		VARCHAR(50)	NOT NULL	UNIQUE
   ,PlayerPassword	VARCHAR(50)	NOT NULL	
+  ,Token VARCHAR(50) NOT NULL UNIQUE
+  ,IsAdmin Boolean DEFAULT FALSE
   ,PRIMARY KEY(PlayerID)
 ) ENGINE = InnoDB;
 
@@ -97,19 +99,19 @@ DROP VIEW IF EXISTS generator_16;
  * QuizAnswers table after creating a Quiz with StartYear and
  * EndYear.
  */
-DROP PROCEDURE IF EXISTS PrepareGameAnswers;
+DROP PROCEDURE IF EXISTS PrepareQuizAnswers;
 DELIMITER //
-  CREATE PROCEDURE PrepareGameAnswers(
-    IN in_GameID	INT(5)
+  CREATE PROCEDURE PrepareQuizAnswers(
+    IN in_QuizID	INT(5)
   )
   BEGIN
-    DELETE FROM GameAnswers WHERE GameID = in_GameID;
+    DELETE FROM QuizAnswers WHERE QuizID = in_QuizID;
     
-    SET @StartYear = (SELECT MAX(StartYear) FROM Games WHERE GameID = in_GameID);
-    SET @NumberOfYears = (SELECT MAX(EndYear) - MAX(StartYear) + 1 FROM Games WHERE GameID = in_GameID);
+    SET @StartYear = (SELECT MAX(StartYear) FROM Quizzes WHERE QuizID = in_QuizID);
+    SET @NumberOfYears = (SELECT MAX(EndYear) - MAX(StartYear) + 1 FROM Quizzes WHERE QuizID = in_QuizID);
 
-    INSERT INTO GameAnswers (GameID, Year)
-    SELECT 1 AS GameID, n + @StartYear	AS Year
+    INSERT INTO QuizAnswers (QuizID, Year)
+    SELECT 1 AS QuizID, n + @StartYear	AS Year
     FROM TallyTable
     WHERE n < @NumberOfYears;
 
@@ -118,10 +120,10 @@ DELIMITER //
 DELIMITER ;
 
 DELIMITER //
-  CREATE TRIGGER after_game_update
-  AFTER INSERT ON Games FOR EACH ROW
+  CREATE TRIGGER after_quiz_update
+  AFTER INSERT ON Quizzes FOR EACH ROW
   BEGIN
-    CALL PrepareGameAnswers(NEW.GameID);
+    CALL PrepareQuizAnswers(NEW.QuizID);
   END
 //
 DELIMITER ;
@@ -135,6 +137,6 @@ SELECT
 	 gm_ans.GameID
 	,gm_ans.SongNumber
 	,
-FROM GameAnswers gm_ans
+FROM QuizAnswers gm_ans
 INNER JOIN PlayerAnswers pl_ans;
 */
