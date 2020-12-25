@@ -119,14 +119,9 @@ DELIMITER //
 //
 DELIMITER ;
 			       
-DELIMITER //
-  CREATE TRIGGER after_quiz_update
+CREATE TRIGGER after_quiz_update
   AFTER INSERT ON Quizzes FOR EACH ROW
-  BEGIN
-    CALL PrepareQuizAnswers(NEW.QuizID);
-  END
-//
-DELIMITER ;
+  CALL PrepareQuizAnswers(NEW.QuizID);
 
 
 CREATE OR REPLACE VIEW QuizScores AS
