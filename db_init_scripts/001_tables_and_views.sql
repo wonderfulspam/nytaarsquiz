@@ -126,7 +126,7 @@ DELIMITER //
     SET @NumberOfYears = (SELECT MAX(EndYear) - MAX(StartYear) + 1 FROM Quizzes WHERE QuizID = in_QuizID);
 
     INSERT INTO QuizAnswers (QuizID, Year)
-    SELECT 1 AS QuizID, n + @StartYear	AS Year
+    SELECT in_QuizID AS QuizID, n + @StartYear	AS Year
     FROM TallyTable
     WHERE n < @NumberOfYears;
 
