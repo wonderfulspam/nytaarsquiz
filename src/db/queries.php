@@ -23,3 +23,9 @@ $find_game_query = 'SELECT q.StartYear, q.EndYear, g.GameID from Games g LEFT JO
 
 // Store single answer
 $store_answer_query = 'INSERT INTO PlayerAnswers (GameId, PlayerID, SongNumber, Year) VALUES (?, ?, ?, ?)';
+
+// Show round score for $GameID, $Round
+$round_score_query = 'CALL RoundScore(?, ?)';
+
+// Show overall game score for $GameID, after $Round
+$game_score_query = 'CALL QuizStandings(?, ?)';
