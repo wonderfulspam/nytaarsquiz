@@ -1,3 +1,7 @@
+document.addEventListener("DOMContentLoaded", function () {
+    addEnterHandler(document.getElementById("pin"), document.getElementById("verify"));
+});
+
 function submitPin() {
     const pin = document.getElementById("pin").value;
     const data = { pin: pin };

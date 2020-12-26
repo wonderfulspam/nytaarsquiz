@@ -20,6 +20,8 @@ function addButtonHandlers() {
         LOGIN_OR_CREATE = "create";
         showNameInput();
     });
+
+    addEnterHandler(document.getElementById("password"), document.getElementById("submit"));
 }
 
 function showNameInput() {

@@ -35,6 +35,16 @@ async function postData(url = '', data = {}) {
     return response.json();
 }
 
+// ADD ENTER CLICK HANDLER
+function addEnterHandler(inputElement, targetElement) {
+    console.log("Handling enter click");
+    inputElement.addEventListener("keypress", function (event) {
+        console.log("Got enter click");
+        if (event.keyCode == 13)
+            targetElement.click();
+    });
+}
+
 // MD5
 // Copied from https://stackoverflow.com/a/14129417/2344711
 function md5(str) {
