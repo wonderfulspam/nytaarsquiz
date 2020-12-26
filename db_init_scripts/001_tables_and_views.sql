@@ -51,6 +51,7 @@ DROP TABLE IF EXISTS Games;
 CREATE TABLE Games (
    GameID		INT(5)		NOT NULL	AUTO_INCREMENT
   ,GamePassword 	VARCHAR(20)	NOT NULL	UNIQUE
+  ,GameTitle  VARCHAR(100) NOT NULL
   ,QuizID		INT(5)		NOT NULL
   ,HostedByPlayerID	INT(5)		NOT NULL
   ,PRIMARY KEY(GameID)
@@ -58,6 +59,20 @@ CREATE TABLE Games (
   ,FOREIGN KEY(QuizID) REFERENCES Quizzes(QuizID)
 ) ENGINE = InnoDB;
 
+
+/* Create table to keep track of players' participations in games. One player
+can participate in one game at a time but multiple games over the course of
+their illustrious quiz careers.
+*/
+DROP TABLE IF EXISTS GameParticipations;
+CREATE TABLE GameParticipations (
+   PlayerID INT(5)  NOT NULL
+  ,GameID INT(5)  NOT NULL
+  ,JoinTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  ,PRIMARY KEY (PlayerID, GameID)
+  ,FOREIGN KEY(PlayerID) REFERENCES Players(PlayerID)
+  ,FOREIGN KEY(GameID) REFERENCES Games(GameID)
+) ENGINE = InnoDB;
 
 /* Creates the table to be populated by answers to specific games. 
  */
@@ -140,6 +155,28 @@ INNER JOIN Quizzes qz
   ON qz.QuizID = gm.QuizID
 INNER JOIN QuizAnswers qz_ans
   ON qz_ans.QuizID = qz.QuizID AND qz_ans.SongNumber = pl_ans.SongNumber;
+
+DROP PROCEDURE IF EXISTS GameState;
+DELIMITER //
+  CREATE PROCEDURE GameState(
+     IN in_playerID INT(5)
+  )
+  BEGIN
+    SELECT g.GameID, g.GameTitle, GROUP_CONCAT(pa.Year) as Years, q.StartYear, q.EndYear
+    FROM Games g
+    LEFT JOIN GameParticipations gp
+    ON g.GameID = gp.GameID
+    LEFT JOIN PlayerAnswers pa
+    ON in_playerID = pa.PlayerID
+    LEFT JOIN Quizzes q
+    ON g.QuizID = q.QuizID
+    WHERE gp.PlayerID = in_playerID
+    GROUP BY gp.GameID, gp.PlayerID
+    ORDER BY gp.JoinTime DESC
+    LIMIT 1;
+  END
+//
+DELIMITER ;
 
 /* Gets the scores of a given round */
 DROP PROCEDURE IF EXISTS RoundScore;

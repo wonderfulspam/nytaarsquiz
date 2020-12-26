@@ -6,8 +6,8 @@ INSERT INTO Players (PlayerName, PlayerPassword, Token, IsAdmin) VALUES
 INSERT INTO Quizzes (StartYear, EndYear, CreatedByPlayerID) VALUES 
    (2014, 2020, 1);
    
-INSERT INTO Games (GamePassword, QuizID, HostedByPlayerID) VALUES 
-   ('gudbevaredanmark', 1, 1);
+INSERT INTO Games (GamePassword, GameTitle, QuizID, HostedByPlayerID) VALUES 
+   ('gudbevaredanmark', "Chrelles nytår 2021", 1, 1);
 
 CREATE TEMPORARY TABLE QuizAnswersTemp (Year INT(4), Artist VARCHAR(50), Title VARCHAR(50), SongNumber INT(2));
 INSERT INTO QuizAnswersTemp VALUES

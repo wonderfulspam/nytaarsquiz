@@ -1,7 +1,4 @@
-var PLAYER_ID;
-var GAME_ID;
-var START_YEAR;
-var END_YEAR;
+var GAME_INFO;
 
 document.addEventListener("DOMContentLoaded", function () {
     getGameInfo();
@@ -11,15 +8,12 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function getGameInfo() {
-    PLAYER_ID = localStorage.getItem("playerId");
-    GAME_ID = localStorage.getItem("gameId");
-    START_YEAR = localStorage.getItem("startYear");
-    END_YEAR = localStorage.getItem("endYear");
+    GAME_INFO = JSON.parse(document.getElementById("game_state").innerHTML);
 }
 
 function createTable() {
     const table = document.getElementById("years");
-    for (var i = START_YEAR; i <= END_YEAR; i++) {
+    for (var i = GAME_INFO.StartYear; i <= GAME_INFO.EndYear; i++) {
         let button = document.createElement("button");
         button.textContent = i.toString();
         table.appendChild(button);
@@ -32,9 +26,11 @@ function addButtonHandlers() {
         // Click handler is on the whole <div> so make sure we clicked a button which is not disabled
         if (event.target.tagName !== "BUTTON" || event.target.classList.contains("disabled")) return;
         let year = event.target.textContent;
-        event.target.classList.add("disabled");
-        registerChoice(year);
-        checkIfDone();
+        let success = registerChoice(year);
+        if (success) {
+            event.target.classList.add("disabled");
+            checkIfDone();
+        }
     });
 
     /*
@@ -45,34 +41,29 @@ function addButtonHandlers() {
     */
 }
 
-function registerChoice(year) {
-    const answerNumber = document.querySelectorAll("button.disabled").length;
+async function registerChoice(year) {
+    // Elem is disabled _after_ submit, so we correct off-by-one error
+    const answerNumber = document.querySelectorAll("button.disabled").length + 1;
     const data = {
-        playerId: PLAYER_ID,
-        gameId: GAME_ID,
+        gameId: GAME_INFO.GameID,
         songNumber: answerNumber,
         year: year
     }
-    postData("/db/store_answer.php", data)
+    return await postData("/db/store_answer.php", data)
         .then(data => handleResponse(data));
 }
 
 function handleResponse(data) {
     if (error = data.error) {
         alert(error);
+        return false;
     }
-}
-
-// Append answer to list of answers and save state
-function _registerChoiceLocal(year) {
-    let answers = JSON.parse(localStorage.getItem("answers") || "[]");
-    answers.push(year);
-    localStorage.setItem("answers", JSON.stringify(answers));
+    return true;
 }
 
 function checkIfDone() {
     let count = document.querySelectorAll("button.disabled").length;
-    if (count >= (END_YEAR - START_YEAR + 1)) {
+    if (count >= (GAME_INFO.EndYear - GAME_INFO.StartYear + 1)) {
         document.getElementById("years").classList.toggle("invisible");
         // document.getElementById("submit").classList.remove("invisible");
     } else {
@@ -82,13 +73,20 @@ function checkIfDone() {
 
 // Set button state from localstorage (ie. previous visits)
 function setButtonState() {
-    let answers = JSON.parse(localStorage.getItem("answers") || "[]"); // Load state
-    if (answers.length >= (END_YEAR - START_YEAR + 1)) { // If we're in a done state, reset everything
-        localStorage.setItem("answers", "[]");
-        return;
+    let answers = GAME_INFO.Years;
+    if (answers) {
+        answers = answers.split(","); // Load state
+    } else {
+        answers = [];
     }
     Array.from(document.querySelectorAll("button")) // Create array of all button elements
         .filter(button => answers.includes(button.textContent)) // Filter by ones whose year exist in answers
         .forEach(button => button.classList.toggle("disabled")); // Set class on all of them
-    document.getElementById("song_number_text").textContent = answers.length + 1; // Set current guess no.
+
+    const songNumberElement = document.getElementById("song_number_text");
+    if (answers.length >= (GAME_INFO.EndYear - GAME_INFO.StartYear + 1)) {
+        songNumberElement.textContent = "";
+    } else {
+        songNumberElement.textContent = answers.length + 1; // Set current guess no.
+    }
 }

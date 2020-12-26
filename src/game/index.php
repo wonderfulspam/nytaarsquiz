@@ -1,5 +1,6 @@
 <?php
 include_once('../db/auth_check.php');
+include_once('../db/initialize_game_state.php');
 ?>
 
 <!DOCTYPE html>
@@ -10,7 +11,7 @@ include_once('../db/auth_check.php');
     <link rel="stylesheet" href="/style.css">
     <script type="text/javascript" src="/js/common.js"></script>
     <script type="text/javascript" src="/js/game.js"></script>
-    <title> >>> GODT NYTÅR 2021 !!! <<< </title>
+    <title><?php echo $game_state['GameTitle']; ?></title>
 </head>
 
 <body>
@@ -21,13 +22,14 @@ include_once('../db/auth_check.php');
                     <p>JERES GÆT PÅ SANG NR:</p>
                 </td>
                 <td style="text-align:center">
-                    <h1 id="song_number_text">1</h1>
+                    <h1 id="song_number_text"></h1>
                 </td>
             </tr>
         </table>
     </div>
     <div id="years">
     </div>
+    <div id="game_state" style="display:none;"><?php echo json_encode($game_state) ?></div>
 </body>
 
 </html>

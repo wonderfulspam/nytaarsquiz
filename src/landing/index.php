@@ -14,8 +14,9 @@ include_once('../db/auth_check.php');
 
 <body>
     <div id="main">
-        <button class="half-width" id="join">Deltag i et spil</button>
-        <button class="half-width" id="create">Opret nyt spil</button>
+        <button class="third-width" id="join">Deltag i et spil</button>
+        <button class="third-width" id="rejoin">Fortsæt aktivt spil</button>
+        <button class="third-width" id="create">Opret nyt spil</button>
     </div>
 </body>
 

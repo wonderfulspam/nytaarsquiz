@@ -17,11 +17,20 @@ $game = $sth->fetch(PDO::FETCH_ASSOC);
 
 if (!$game) {
     echo json_encode(array('error' => 'Game not found'));
+    return;
+}
+
+// Find playerID and register their participation
+$sth = $connection->prepare($get_user_id_from_token);
+$sth->execute(array($_COOKIE["token"]));
+$playerId = $sth->fetch()['PlayerID'];
+
+$sth = $connection->prepare($join_game_query);
+$success = $sth->execute(array($game['GameID'], $playerId));
+
+// Tell the client all went well
+if ($success) {
+    echo json_encode(array('message' => 'OK'));
 } else {
-    $res = array(
-        'gameId' => $game['GameID'],
-        'startYear' => $game['StartYear'],
-        'endYear' => $game['EndYear']
-    );
-    echo json_encode($res);
+    echo json_encode(array('error' => 'Failed to add player to game'));
 }

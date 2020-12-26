@@ -21,6 +21,15 @@ $login_query = 'SELECT Token from Players where PlayerName = ? and PlayerPasswor
 // Look up game by password
 $find_game_query = 'SELECT q.StartYear, q.EndYear, g.GameID from Games g LEFT JOIN Quizzes q ON g.QuizID = q.QuizID where g.GamePassword = ?';
 
+// Add player to game
+$join_game_query = 'INSERT INTO GameParticipations (GameID, PlayerID) VALUES (?, ?)';
+
+// Check if user belongs to game
+$user_state_query = 'SELECT g.GameTitle FROM Games g LEFT JOIN GameParticipations gp ON g.GameID = gp.GameID WHERE gp.PlayerID = ? ORDER BY gp.JoinTime DESC LIMIT 1';
+
+// Load game state for user
+$game_state_query = 'CALL GameState(?)';
+
 // Store single answer
 $store_answer_query = 'INSERT INTO PlayerAnswers (GameId, PlayerID, SongNumber, Year) VALUES (?, ?, ?, ?)';
 
