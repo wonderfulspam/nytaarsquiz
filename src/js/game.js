@@ -37,10 +37,12 @@ function addButtonHandlers() {
         checkIfDone();
     });
 
+    /*
     const submitButton = document.getElementById("showResults");
     submitButton.addEventListener("click", function () {
         window.location = "/results";
     })
+    */
 }
 
 function registerChoice(year) {
@@ -72,7 +74,7 @@ function checkIfDone() {
     let count = document.querySelectorAll("button.disabled").length;
     if (count >= (END_YEAR - START_YEAR + 1)) {
         document.getElementById("years").classList.toggle("invisible");
-        document.getElementById("submit").classList.remove("invisible");
+        // document.getElementById("submit").classList.remove("invisible");
     } else {
         document.getElementById("song_number_text").textContent = count + 1;
     }

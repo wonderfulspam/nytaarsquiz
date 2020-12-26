@@ -28,9 +28,6 @@ include_once('../db/auth_check.php');
     </div>
     <div id="years">
     </div>
-    <div id="submit" class="invisible">
-        <button id="showResults">Vis resultater</button>
-    </div>
 </body>
 
 </html>
