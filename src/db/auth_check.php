@@ -15,7 +15,7 @@ if (!$success) {
     error_log("Failed to match token");
     // We got a token, but the token doesn't match anyone we know
     // Blank the cookie and return to front page
-    setcookie("token", "", time() - 3600);
+    setcookie("token", "", time() - 3600, '/');
     header('Location: /');
     return;
 }
