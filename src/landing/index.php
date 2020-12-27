@@ -1,5 +1,5 @@
 <?php
-include_once('../db/auth_check.php');
+include_once('../api/auth_check.php');
 ?>
 
 <!DOCTYPE html>

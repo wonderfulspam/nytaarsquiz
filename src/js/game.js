@@ -49,7 +49,7 @@ async function registerChoice(year) {
         songNumber: answerNumber,
         year: year
     }
-    return await postData("/db/store_answer.php", data)
+    return await postData("/api/store_answer.php", data)
         .then(data => handleResponse(data));
 }
 

@@ -1,6 +1,6 @@
 <?php
-include_once('../db/auth_check.php');
-include_once('../db/initialize_game_state.php');
+include_once('../api/auth_check.php');
+include_once('../api/initialize_game_state.php');
 ?>
 
 <!DOCTYPE html>

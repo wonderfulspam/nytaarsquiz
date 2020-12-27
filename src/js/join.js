@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function submitPin() {
     const pin = document.getElementById("pin").value;
     const data = { pin: pin };
-    postData("/db/find_game.php", data)
+    postData("/api/find_game.php", data)
         .then(data => handleGameResponse(data));
 }
 

@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 async function loadResults() {
-    return postData("/db/scores.php").then(data => { return data });
+    return postData("/api/scores.php").then(data => { return data });
 }
 
 function createDOM() {

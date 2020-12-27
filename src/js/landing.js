@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 async function loadUserState() {
-    await postData("/db/user_state.php", {}).then(data => USER_STATE = data);
+    await postData("/api/user_state.php", {}).then(data => USER_STATE = data);
 }
 
 function addButtonHandlers() {

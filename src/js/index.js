@@ -37,7 +37,7 @@ function loginOrCreate() {
     let password = document.getElementById("password").value;
     password = md5(password);
     console.log(password);
-    postData("/db/login_or_create.php", { username: username, password: password, action: LOGIN_OR_CREATE })
+    postData("/api/login_or_create.php", { username: username, password: password, action: LOGIN_OR_CREATE })
         .then(data => handleResponse(data));
 }
 
